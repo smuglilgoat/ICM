@@ -65,3 +65,41 @@ function Output_RGB = bilinear(Image_CFA)
     end
     Output_RGB = uint8(outputImage);
 end
+
+function Output_RGB = taint(Image_CFA)
+    [rows, columns] = size(Image_CFA);
+    modifiedCFA = Image_CFA;
+    firstRow = Image_CFA(2, :);
+    modifiedCFA = [firstRow; modifiedCFA];
+    firstCol = Image_CFA(:, 2);
+    modifiedCFA = [[ 0; firstCol] modifiedCFA];
+    lastRow = Image_CFA(rows - 1, :);
+    modifiedCFA = [modifiedCFA; [0 lastRow]];
+    lastCol = Image_CFA(:, columns - 1);
+    modifiedCFA = [modifiedCFA [0; lastCol; 0]];
+    outputImage = zeros(rows, columns, 3); % Initialize
+    for col = 1 : 2 : columns - 1
+        for row = 1 : 2 : rows - 1
+            % Green Pixel
+            outputImage(row, col, 1) = 
+            outputImage(row, col, 2) = modifiedCFA(row + 1, col + 1);
+            outputImage(row, col, 3) = 
+            
+            % Red Pixel
+            outputImage(row, col + 1, 1) = modifiedCFA(row + 1, col + 2);
+            outputImage(row, col + 1, 2) = (modifiedCFA(row, col + 2) + modifiedCFA(row + 2, col + 2) + modifiedCFA(row + 1, col + 1) + modifiedCFA(row + 1, col + 3)) / 4; 
+            outputImage(row, col + 1, 3) = 
+            
+            % Blue Pixel
+            outputImage(row + 1, col, 1) = 
+            outputImage(row + 1, col, 2) = (modifiedCFA(row + 1, col + 1) + modifiedCFA(row + 3, col + 1) + modifiedCFA(row + 2, col) + modifiedCFA(row + 2, col + 2)) / 4; 
+            outputImage(row + 1, col, 3) = modifiedCFA(row + 2, col + 1);
+            
+            % Green Pixel
+            outputImage(row + 1, col + 1, 1) = 
+            outputImage(row + 1, col + 1, 2) = modifiedCFA(row + 2, col + 2);
+            outputImage(row + 1, col + 1, 3) = 
+        end
+    end
+    Output_RGB = uint8(outputImage);
+end

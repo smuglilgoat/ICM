@@ -1,4 +1,4 @@
-img = imread('0404_GY89137_parasite(9).jpg');
+img = imread('0404_GY89137_parasite(7).jpg');
 % figure
 % imshow(img)
 gray = rgb2gray(img);
@@ -21,10 +21,8 @@ CC = bwconncomp(BW);
 
 CC = bwconncomp(BW);
 
-SE = strel("line",5,45);
-
 stats = regionprops(CC,"Area","MinorAxisLength", "MajorAxisLength"); 
-idx = find([stats.Area] > 2000 & [stats.Area] < 50000 & [stats.MajorAxisLength] >= 1.5 * [stats.MinorAxisLength]); 
+idx = find([stats.Area] > 2000 & [stats.Area] < 50000 & ); 
 BW4 = ismember(labelmatrix(CC),idx);
 
 CC = bwconncomp(BW4)
